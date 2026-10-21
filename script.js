@@ -2,8 +2,8 @@
 const $ = id => document.getElementById(id);
 const STORAGE_KEY = 'worksheet-two-steps-v1';
 const gradeInfo = {
-  low: {name:'低年級（1–2年級）', description:'大字、短句、具體圖像；少量填空與詞語提示。指定注音芫荽，逐字核對注音。', design:'低年級：大字、短句、一句一個概念，使用具體生活情境和清楚圖像。建議4–6格，依教材調整，內容過多就拆頁。指定注音芫荽（Bpmf Iansui），文字右側加正確注音。不得只聲稱已套用字型；若圖片生成功能無法精確使用此字型，請如實告知，另附逐字文字底稿供以實際字型檔排版，並列出多音字待教師確認。'},
-  middle: {name:'中年級（3–4年級）', description:'圖像協助分類、順序與簡單因果；保留關鍵詞填空，可選擇是否提供詞語庫。', design:'中年級：用圖像協助分類、先後順序、簡單因果，題面短句，關鍵詞填空。一般建議6–8格，依教材調整，不能為湊題數新增知識。至少三分之一考概念關係或應用。'},
+  low: {name:'低年級（1–2年級）', description:'大字、短句、具體圖像；少量填空與詞語提示。預設加注音，可調整標示方式。', design:'低年級：大字、短句、一句一個概念，使用具體生活情境和清楚圖像。建議4–6格，依教材調整，內容過多就拆頁。'},
+  middle: {name:'中年級（3–4年級）', description:'圖像協助分類、順序與簡單因果；保留關鍵詞填空，預設加入注音輔助，可關閉或選擇詞語提示。', design:'中年級：用圖像協助分類、先後順序、簡單因果，題面短句，關鍵詞填空。一般建議6–8格，依教材調整，不能為湊題數新增知識。至少三分之一考概念關係或應用。'},
   high: {name:'高年級（5–6年級）', description:'減少提示，練習比較、因果與概念關聯；提高思考要求，內容仍以原教材為準。', design:'高年級：減少直接提示，著重比較、因果、概念關聯與應用。一般建議8–10格，依教材調整，必要時拆頁。至少三分之一考關係；提高思考要求不等於增加教材外知識。'}
 };
 const exampleMaterial = `【已核對教材拆解：四上社會1-2 家鄉的地形】
@@ -25,9 +25,9 @@ B08 地形影響居民生活，居民的活動也會改變地表的【　　　�
 【視覺限制：不是要印在學習單上的正文】
 三區：觀察地形／地形與生活／人與環境互相影響。五種地形用彼此分離的示意圖，不畫成固定由低到高的連續剖面；盆地中間低平、四周較高，不畫成湖泊；台地平頂陡邊，不畫成尖山。魚塭對應靠海平原，茶果園對應較平緩山坡地。第三區保留雙向影響，禁止在對應圖旁直接標出填空答案。
 來源檔：02_國小社會4上課本_1-2_(學).pdf；教冊確認02_國小社會4上教冊(教學篇)_1-2_(教).pdf。教學導航實體40／PDF1，教學活動41／PDF2，內嵌課本20–23在教冊實體42–45／PDF3–6。`;
-let state = {grade:'middle',subject:'社會',lesson:'',pages:'',material:'',support:'grade',layout:'橫式',issues:'',checks:{},step:1};
+let state = {grade:'middle',subject:'社會',lesson:'',pages:'',material:'',support:'grade',phonetic:'grade',layout:'橫式',issues:'',checks:{},step:1};
 let storageAvailable = true;
-try {const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(saved && typeof saved==='object' && !Array.isArray(saved)){for(const key of ['subject','lesson','pages','material','issues'])if(typeof saved[key]==='string')state[key]=saved[key];if(gradeInfo[saved.grade])state.grade=saved.grade;if(['grade','none','bank'].includes(saved.support))state.support=saved.support;if(['橫式','直式'].includes(saved.layout))state.layout=saved.layout;if(saved.checks&&typeof saved.checks==='object'&&!Array.isArray(saved.checks))state.checks=saved.checks;if(saved.step===2)state.step=2;}}catch{storageAvailable=false;}
+try {const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(saved && typeof saved==='object' && !Array.isArray(saved)){for(const key of ['subject','lesson','pages','material','issues'])if(typeof saved[key]==='string')state[key]=saved[key];if(gradeInfo[saved.grade])state.grade=saved.grade;if(['grade','none','bank'].includes(saved.support))state.support=saved.support;if(['grade','on','off'].includes(saved.phonetic))state.phonetic=saved.phonetic;if(['橫式','直式'].includes(saved.layout))state.layout=saved.layout;if(saved.checks&&typeof saved.checks==='object'&&!Array.isArray(saved.checks))state.checks=saved.checks;if(!['grade','on','off'].includes(saved.phonetic))state.checks={};if(saved.step===2)state.step=2;}}catch{storageAvailable=false;}
 let toastTimer;
 function toast(message){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),3000);}
 function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));$('save-status').textContent='已儲存在目前瀏覽器';storageAvailable=true;}catch{storageAvailable=false;$('save-status').textContent='儲存不可用，請匯出製作包';}}
@@ -51,10 +51,13 @@ ${gradeInfo[state.grade].design}
 每項重點、每個答案列來源檔名、印刷頁碼與PDF頁序，分清教冊實體頁碼和內嵌課本頁碼。無法讀到頁碼寫「無法確認」，不可推測。不聲稱已操作本機或已驗證圖片。
 最後提醒老師開啟引用原頁核對後，再將內容交給ChatGPT。`;}
 function bankRule(){if(state.support==='none'||(state.support==='grade'&&state.grade==='high'))return '不提供詞語庫；不在對應圖旁、標題、圖說或空格直接透露答案。';return '提供打亂順序的詞語庫作為提示，各詞不編對應題號；空格保持空白，不在對應圖旁直接寫答案。詞語庫是有意提供的提示，不是填好的答案。';}
+function usesPhonetic(){return state.phonetic==='on'||(state.phonetic==='grade'&&state.grade!=='high');}
+function phoneticRule(){return usesPhonetic()?'注音標示：指定注音芫荽（Bpmf Iansui），每個中文字右側加清楚的臺灣國語直式注音與聲調；注音不可重疊，不佔用手寫空格，必要時增行距或拆頁。多音字依詞義核對，未填的答案也不得用注音洩漏。圖片生成無法證明精確套用字型檔，不得宣稱已精確套用；若無法保證，請如實說明，並另附文字底稿供實際字型排版。':'本次不加注音，使用清楚繁體中文字，保留足夠手寫空間。';}
 function imagePrompt(){if(!state.material.trim())return '';return `請直接使用圖片生成功能，製作「${state.lesson.trim()||'依教材辨識課名'}」圖片式填空學習單的學生版。這次要圖片，不是只有提示詞或程式碼。
 對象：${gradeInfo[state.grade].name}；科目：${state.subject.trim()||'依教材'}。A4${state.layout}比例，白底、清楚繁體中文、有足夠手寫空間；內容太多請拆頁，不能縮小到不可讀。
 ${gradeInfo[state.grade].design}
 ${bankRule()}
+${phoneticRule()}
 內容規則：只用下方已核對教材，不新增外部知識。若已指定正式題碼與題面，逐字保留；若仍是候選，先依年級挑選並編B01起的正式題碼，另列正式題面及答案表供核對。圖片與箭頭應顯示教材的分類、比較、順序或因果，不只是裝飾。條件不明或來源互相矛盾時，列出疑點請老師確認，不能猜答案。
 學生圖只印學生標題、班級姓名日期、必要的教學圖文及空白題目。下方底稿中的教師答案、來源表、製作規則、檢查清單不當作學生正文印在圖上。答案表另以文字提供，不放進學生圖片。
 請先產生學生圖片，等待老師檢查後，再從同一張圖編輯教師答案版。不要宣稱圖片已經驗證正確。
@@ -62,12 +65,12 @@ ${bankRule()}
 【已核對教材底稿開始】
 ${state.material.trim()}
 【已核對教材底稿結束】`;}
-function teacherPrompt(){if(!state.material.trim())return '';return `請根據剛才已由老師核對的學生圖，使用圖片編輯製作同版教師答案圖。保持原圖版面、插圖、所有題面、題碼和空格位置，只在原空格以紅色填入答案，並加小字「教師答案版」。不得新增、刪除、更換題目；不要重新排版。若題面或答案不確定，先列疑點，不猜。
+function teacherPrompt(){if(!state.material.trim())return '';return `請根據剛才已由老師核對的學生圖，使用圖片編輯製作同版教師答案圖。保持原圖版面、插圖、所有題面、題碼和空格位置，保留原有注音，只在原空格以紅色填入答案，並加小字「教師答案版」。如原圖有注音，答案也要帶正確注音，但不可擠壓題面。不得新增、刪除、更換題目；不要重新排版。若題面或答案不確定，先列疑點，不猜。
 請對照下面教材底稿的獨立答案與來源，逐格確認題碼一致，再出圖。出圖後仍需人工比較兩版。
 ${state.material.trim()}`;}
-function render(){document.querySelectorAll('[data-grade]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.grade===state.grade)));$('grade-description').textContent=gradeInfo[state.grade].description;$('font-note').hidden=state.grade!=='low';$('notebook-prompt').value=notebookPrompt();$('image-prompt').value=imagePrompt();$('teacher-prompt').value=teacherPrompt();$('copy-image').disabled=!state.material.trim();$('material-status').textContent=!state.material.trim()?'先貼上已核對教材，才能複製圖片提示詞。':state.material.trim().length<100?'目前內容較短，請確認已包含架構、候選題、答案與來源。':'提示詞已帶入你的教材與年級設定，複製前可向上檢查。';}
+function render(){document.querySelectorAll('[data-grade]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.grade===state.grade)));$('grade-description').textContent=gradeInfo[state.grade].description;$('font-note').hidden=!usesPhonetic();$('notebook-prompt').value=notebookPrompt();$('image-prompt').value=imagePrompt();$('teacher-prompt').value=teacherPrompt();$('copy-image').disabled=!state.material.trim();$('material-status').textContent=!state.material.trim()?'先貼上已核對教材，才能複製圖片提示詞。':state.material.trim().length<100?'目前內容較短，請確認已包含架構、候選題、答案與來源。':'提示詞已帶入你的教材與年級設定，複製前可向上檢查。';}
 async function copyText(text,field){if(!text.trim()){toast('請先填入教材內容。');return;}try{await navigator.clipboard.writeText(text);toast('已複製，可以貼到對應平台。');}catch{if(field){field.focus();field.select();}toast('自動複製不可用，請選取文字後手動複製。');}}
-for(const key of ['subject','lesson','pages','material','support','layout','issues']){$(key).value=state[key];$(key).addEventListener('input',()=>{state[key]=$(key).value;if(key!=='issues')clearChecks();render();save();});}
+for(const key of ['subject','lesson','pages','material','support','phonetic','layout','issues']){$(key).value=state[key];$(key).addEventListener('input',()=>{state[key]=$(key).value;if(key!=='issues')clearChecks();render();save();});}
 document.querySelectorAll('[data-grade]').forEach(el=>el.addEventListener('click',()=>{state.grade=el.dataset.grade;clearChecks();render();save();}));
 document.querySelectorAll('[data-check]').forEach(el=>{el.checked=state.checks[el.dataset.check]===true;el.addEventListener('change',()=>{state.checks[el.dataset.check]=el.checked;save();});});
 for(const i of [1,2]){$('tab-'+i).addEventListener('click',()=>switchStep(i));$('tab-'+i).addEventListener('keydown',event=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();switchStep(event.key==='Home'?1:event.key==='End'?2:i===1?2:1,true);}});}
@@ -75,6 +78,6 @@ $('next-step').addEventListener('click',()=>{switchStep(2,true);$('tab-2').scrol
 document.querySelectorAll('[data-copy]').forEach(el=>el.addEventListener('click',()=>copyText($(el.dataset.copy).value,$(el.dataset.copy))));
 $('load-example').addEventListener('click',()=>{if(state.material.trim()&&state.material!==exampleMaterial&&!window.confirm('載入範例會取代目前工作區的教材內容。先取消並匯出，可保留原內容。要載入範例嗎？'))return;Object.assign(state,{grade:'middle',subject:'社會',lesson:'四上1-2 家鄉的地形',pages:'課本印刷20–23頁／PDF1–4',material:exampleMaterial,support:'none'});for(const key of ['subject','lesson','pages','material','support'])$(key).value=state[key];clearChecks();render();save();toast('已載入四年級實測底稿（無詞語庫版）。');});
 $('copy-fix').addEventListener('click',()=>{if(!state.issues.trim()){toast('先寫下要修正的地方。');$('issues').focus();return;}copyText(`請編輯剛才的學習單圖片，只修正以下問題，其餘題面、題碼、空格與版面保持一致。不要新增教材外知識，不確定的內容先問老師。\n${state.issues.trim()}\n對象：${gradeInfo[state.grade].name}。修正後提供圖片與修改清單，仍須老師對照教材核對。`,$('issues'));});
-$('download').addEventListener('click',()=>{const checks=[...document.querySelectorAll('[data-check]')].map(el=>`- [${el.checked?'x':' '}] ${el.parentElement.textContent.trim()}`).join('\n');const text=`# ${state.lesson.trim()||'我的圖像學習單'}｜兩步驟製作包\n\n年級：${gradeInfo[state.grade].name}\n範圍：${state.pages||'未填'}\n\n## 1. NotebookLM提示詞\n\n${notebookPrompt()}\n\n## 已核對教材拆解\n\n${state.material||'尚未貼入'}\n\n## 2. ChatGPT學生圖片提示詞\n\n${imagePrompt()||'先貼入教材拆解'}\n\n## 同版教師圖片提示詞\n\n${teacherPrompt()||'先貼入教材拆解'}\n\n## 人工檢查紀錄\n\n${checks}\n\n## 待修正\n\n${state.issues||'未填'}\n\n勾選僅是人工紀錄，不代表系統驗證或教師已定稿。`;const url=URL.createObjectURL(new Blob([text],{type:'text/markdown;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='兩步驟學習單製作包.md';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('製作包已匯出。');});
+$('download').addEventListener('click',()=>{const checks=[...document.querySelectorAll('[data-check]')].map(el=>`- [${el.checked?'x':' '}] ${el.parentElement.textContent.trim()}`).join('\n');const text=`# ${state.lesson.trim()||'我的圖像學習單'}｜兩步驟製作包\n\n年級：${gradeInfo[state.grade].name}\n注音：${usesPhonetic()?'加注音':'不加注音'}\n範圍：${state.pages||'未填'}\n\n## 1. NotebookLM提示詞\n\n${notebookPrompt()}\n\n## 已核對教材拆解\n\n${state.material||'尚未貼入'}\n\n## 2. ChatGPT學生圖片提示詞\n\n${imagePrompt()||'先貼入教材拆解'}\n\n## 同版教師圖片提示詞\n\n${teacherPrompt()||'先貼入教材拆解'}\n\n## 人工檢查紀錄\n\n${checks}\n\n## 待修正\n\n${state.issues||'未填'}\n\n勾選僅是人工紀錄，不代表系統驗證或教師已定稿。`;const url=URL.createObjectURL(new Blob([text],{type:'text/markdown;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='兩步驟學習單製作包.md';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('製作包已匯出。');});
 $('clear').addEventListener('click',()=>{if(!window.confirm('清除目前瀏覽器內這個工具的教材與檢查紀錄？建議先匯出製作包。'))return;try{localStorage.removeItem(STORAGE_KEY);}catch{}location.reload();});
 render();switchStep(state.step);if(!storageAvailable)$('save-status').textContent='儲存不可用，請匯出製作包';
