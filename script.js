@@ -4,7 +4,7 @@ const STORAGE_KEY = 'worksheet-two-steps-v1';
 const gradeInfo = {
   low: {name:'低年級（1–2年級）', description:'大字、短句、具體圖像；少量填空與詞語提示。預設加注音，可調整標示方式。', design:'低年級：大字、短句、一句一個概念，使用具體生活情境和清楚圖像。建議4–6格，依教材調整，內容過多就拆頁。'},
   middle: {name:'中年級（3–4年級）', description:'圖像協助分類、順序與簡單因果；保留關鍵詞填空，預設加入注音輔助，可關閉或選擇詞語提示。', design:'中年級：用圖像協助分類、先後順序、簡單因果，題面短句，關鍵詞填空。一般建議6–8格，依教材調整，不能為湊題數新增知識。至少三分之一考概念關係或應用。'},
-  high: {name:'高年級（5–6年級）', description:'減少提示，練習比較、因果與概念關聯；提高思考要求，內容仍以原教材為準。', design:'高年級：減少直接提示，著重比較、因果、概念關聯與應用。一般建議8–10格，依教材調整，必要時拆頁。至少三分之一考關係；提高思考要求不等於增加教材外知識。'}
+  high: {name:'高年級（5–6年級）', description:'參考六年級C挑戰版：自主建構架構、引用課文證據、情境判斷並自行出題；不預填分支與關鍵詞。', design:'高年級C挑戰版：學生自行閱讀教材、分類與建構架構，說明關係並引用課文依據，不是只挖8–10個關鍵詞。學生版只給核心大問題、開放心智圖空白區、3題有討論空間的情境判斷、1題學生自編題與1題延伸思考。心智圖至少占半頁；空間不足就拆成建構頁與應用頁，不縮小文字。一般檢核只問概念有無依據、層級清楚、關係可解釋、例子適切，不列本課主幹或答案名稱。情境明確標示為教學假設，推理限於教材支持的原則，不新增外部知識或要求法律定論。完整架構、作答方向、替代合理說法與三級評分規準放教師版。'}
 };
 const exampleMaterial = `【已核對教材拆解：四上社會1-2 家鄉的地形】
 年級：中年級（四年級）。課本印刷20–23頁／PDF1–4。
@@ -44,16 +44,26 @@ function notebookPrompt(){return `請只根據目前已選取的本課教材，�
 1. 本課核心問題與主要概念。
 2. 教材架構：依知識關係分成適合的部分，說明分類、順序、比較、因果或互相影響；不要硬湊固定三部分。
 3. 各部分關鍵詞、教材中的具體例子及圖像可表達的關係。
-4. 適合上述年級的填空候選題、答案、可接受替代答案與教材依據。避免挖零碎字、重複答案或多解題；保留「可能」「較」等限定語。題數依內容及可讀性決定，內容太多提出拆頁建議。
-5. 能直接交給ChatGPT的完整內容底稿：學生短句、編號、填空、獨立教師答案表與來源表，將製圖限制和教材正文分開。
+${state.grade==='high'?'4. 另列教師專用概念架構、關係與來源表；設計3個需引用教材原則的假設情境，附可接受的推理與條件差異。學生版保留自主建構空間，不預先填好主幹或分類。不把開放題當單一標準答案題。':'4. 適合上述年級的填空候選題、答案、可接受替代答案與教材依據。避免挖零碎字、重複答案或多解題；保留「可能」「較」等限定語。題數依內容及可讀性決定，內容太多提出拆頁建議。'}
+${state.grade==='high'?'5. 輸出可交給ChatGPT的挑戰版底稿：教師端完整教材分析／學生端任務短句、情境及作答空間／獨立教師參考與評分規準。每題保留「課本第＿頁／依據＿／我的理由＿」，不用現成小提醒或總結句代學生思考。':'5. 能直接交給ChatGPT的完整內容底稿：學生短句、編號、填空、獨立教師答案表與來源表，將製圖限制和教材正文分開。'}
 6. 易畫錯的概念與待教師確認事項。
 ${gradeInfo[state.grade].design}
 每項重點、每個答案列來源檔名、印刷頁碼與PDF頁序，分清教冊實體頁碼和內嵌課本頁碼。無法讀到頁碼寫「無法確認」，不可推測。不聲稱已操作本機或已驗證圖片。
 最後提醒老師開啟引用原頁核對後，再將內容交給ChatGPT。`;}
-function bankRule(){if(state.support==='none'||(state.support==='grade'&&state.grade==='high'))return '不提供詞語庫；不在對應圖旁、標題、圖說或空格直接透露答案。';return '提供打亂順序的詞語庫作為提示，各詞不編對應題號；空格保持空白，不在對應圖旁直接寫答案。詞語庫是有意提供的提示，不是填好的答案。';}
+function bankRule(){if(state.grade==='high')return 'C挑戰版不提供詞語庫，不預填本課分類、主幹、分支、關係箭頭答案或總結句。';if(state.support==='none'||(state.support==='grade'&&state.grade==='high'))return '不提供詞語庫；不在對應圖旁、標題、圖說或空格直接透露答案。';return '提供打亂順序的詞語庫作為提示，各詞不編對應題號；空格保持空白，不在對應圖旁直接寫答案。詞語庫是有意提供的提示，不是填好的答案。';}
 function usesPhonetic(){return state.phonetic==='on'||(state.phonetic==='grade'&&state.grade!=='high');}
 function phoneticRule(){return usesPhonetic()?'注音標示：指定注音芫荽（Bpmf Iansui），每個中文字右側加清楚的臺灣國語直式注音與聲調；注音不可重疊，不佔用手寫空格，必要時增行距或拆頁。多音字依詞義核對，未填的答案也不得用注音洩漏。圖片生成無法證明精確套用字型檔，不得宣稱已精確套用；若無法保證，請如實說明，並另附文字底稿供實際字型排版。':'本次不加注音，使用清楚繁體中文字，保留足夠手寫空間。';}
-function imagePrompt(){if(!state.material.trim())return '';return `請直接使用圖片生成功能，製作「${state.lesson.trim()||'依教材辨識課名'}」圖片式填空學習單的學生版。這次要圖片，不是只有提示詞或程式碼。
+function highImagePrompt(){return `請直接使用圖片生成功能，製作「${state.lesson.trim()||'依底稿確認課名'}｜C挑戰版」學生學習單。標題與情境必須對應本課，不能沿用上一課的標題、名詞或檢核內容。
+對象：${gradeInfo.high.name}；科目：${state.subject.trim()||'依教材'}。A4${state.layout}，繁體中文，留足手寫空間，不提供詞語庫。
+${gradeInfo.high.design}
+${phoneticRule()}
+請按5個任務區安排：1.只給本課核心大問題及不含答案的通用檢核；2.至少半頁完全空白的心智圖區，不預畫主幹、分支或關係箭頭；3.三個假設生活情境，每題留「相關概念＿／我的判斷＿／理由＿／課本第＿頁或教材依據＿」，允許依條件討論，不只勾對錯；4.我是出題老師，留情境、問題、參考答案與依據空白；5.開放延伸題並留作答空間。若一頁無法保留半頁心智圖，請拆兩張。
+插圖只能中性裝飾或描述情境，不可用機關標籤、分支圖或答案示例替學生完成架構。底稿中的完整概念表、原填空答案與總結只供教師查核，不能原樣印進學生圖。若底稿仍是關鍵詞填空，將其作為教師端概念依據，轉成上述挑戰任務，不將填空答案印出。
+情境不可要求教材未提供的精確法規結論，資料不足時讓學生指出缺少哪些條件。先產生學生圖及另列教師參考文字；教師版圖片等老師檢查後另作。不要自稱已完成內容驗證。
+【已核對教材底稿開始】
+${state.material.trim()}
+【已核對教材底稿結束】`; }
+function imagePrompt(){if(!state.material.trim())return '';if(state.grade==='high')return highImagePrompt();return `請直接使用圖片生成功能，製作「${state.lesson.trim()||'依教材辨識課名'}」圖片式填空學習單的學生版。這次要圖片，不是只有提示詞或程式碼。
 對象：${gradeInfo[state.grade].name}；科目：${state.subject.trim()||'依教材'}。A4${state.layout}比例，白底、清楚繁體中文、有足夠手寫空間；內容太多請拆頁，不能縮小到不可讀。
 ${gradeInfo[state.grade].design}
 ${bankRule()}
@@ -65,10 +75,10 @@ ${phoneticRule()}
 【已核對教材底稿開始】
 ${state.material.trim()}
 【已核對教材底稿結束】`;}
-function teacherPrompt(){if(!state.material.trim())return '';return `請根據剛才已由老師核對的學生圖，使用圖片編輯製作同版教師答案圖。保持原圖版面、插圖、所有題面、題碼和空格位置，保留原有注音，只在原空格以紅色填入答案，並加小字「教師答案版」。如原圖有注音，答案也要帶正確注音，但不可擠壓題面。不得新增、刪除、更換題目；不要重新排版。若題面或答案不確定，先列疑點，不猜。
+function teacherPrompt(){if(!state.material.trim())return '';if(state.grade==='high')return `請依剛才C挑戰版的任務編號，另外製作教師參考版，不覆寫學生空白圖。提供完整參考概念架構、各題教材依據與推理方向、合理替代答案及三級評分規準（精熟／達標／待加強），面向含概念正確、關係解釋、教材證據、情境推理及自主表達。學生可用不同架構或立場，只要有依據；不以與範例圖相同當得分標準。自編題沒有唯一答案，評量其情境合理、提問清楚與答案有據。未經來源支持的法規或細節標示教材未明確提供。\n${state.material.trim()}`;return `請根據剛才已由老師核對的學生圖，使用圖片編輯製作同版教師答案圖。保持原圖版面、插圖、所有題面、題碼和空格位置，保留原有注音，只在原空格以紅色填入答案，並加小字「教師答案版」。如原圖有注音，答案也要帶正確注音，但不可擠壓題面。不得新增、刪除、更換題目；不要重新排版。若題面或答案不確定，先列疑點，不猜。
 請對照下面教材底稿的獨立答案與來源，逐格確認題碼一致，再出圖。出圖後仍需人工比較兩版。
 ${state.material.trim()}`;}
-function render(){document.querySelectorAll('[data-grade]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.grade===state.grade)));$('grade-description').textContent=gradeInfo[state.grade].description;$('font-note').hidden=!usesPhonetic();$('notebook-prompt').value=notebookPrompt();$('image-prompt').value=imagePrompt();$('teacher-prompt').value=teacherPrompt();$('copy-image').disabled=!state.material.trim();$('material-status').textContent=!state.material.trim()?'先貼上已核對教材，才能複製圖片提示詞。':state.material.trim().length<100?'目前內容較短，請確認已包含架構、候選題、答案與來源。':'提示詞已帶入你的教材與年級設定，複製前可向上檢查。';}
+function render(){document.querySelectorAll('[data-grade]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.grade===state.grade)));$('grade-description').textContent=gradeInfo[state.grade].description;$('font-note').hidden=!usesPhonetic();$('high-note').hidden=state.grade!=='high';$('support').disabled=state.grade==='high';$('support').title=state.grade==='high'?'C挑戰版不使用詞語庫':'';$('notebook-prompt').value=notebookPrompt();$('image-prompt').value=imagePrompt();$('teacher-prompt').value=teacherPrompt();$('copy-image').disabled=!state.material.trim();$('material-status').textContent=!state.material.trim()?'先貼上已核對教材，才能複製圖片提示詞。':state.material.trim().length<100?'目前內容較短，請確認已包含架構、候選題、答案與來源。':'提示詞已帶入你的教材與年級設定，複製前可向上檢查。';}
 async function copyText(text,field){if(!text.trim()){toast('請先填入教材內容。');return;}try{await navigator.clipboard.writeText(text);toast('已複製，可以貼到對應平台。');}catch{if(field){field.focus();field.select();}toast('自動複製不可用，請選取文字後手動複製。');}}
 for(const key of ['subject','lesson','pages','material','support','phonetic','layout','issues']){$(key).value=state[key];$(key).addEventListener('input',()=>{state[key]=$(key).value;if(key!=='issues')clearChecks();render();save();});}
 document.querySelectorAll('[data-grade]').forEach(el=>el.addEventListener('click',()=>{state.grade=el.dataset.grade;clearChecks();render();save();}));
