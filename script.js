@@ -2,7 +2,7 @@
 const $ = id => document.getElementById(id);
 const STORAGE_KEY = 'worksheet-two-steps-v1';
 const gradeInfo = {
-  low: {name:'低年級（1–2年級）', description:'大字、短句、具體圖像；少量填空與詞語提示。預設加注音，可調整標示方式。', design:'低年級：大字、短句、一句一個概念，使用具體生活情境和清楚圖像。建議4–6格，依教材調整，內容過多就拆頁。'},
+  low: {name:'低年級（1–2年級）', description:'大字、短句、具體圖像；少量填空與詞語提示。預設加注音，可調整標示方式。', design:'低年級：大字、短句、一句一個概念，使用具體生活情境和清楚圖像。填空格數依老師選擇，依教材調整，內容過多就拆頁。'},
   middle: {name:'中年級（3–4年級）', description:'以黑白情境圖承載填空，加入比較、順序與因果；保留少量理由題，不以大量申論增加難度。', design:'中年級：以圖文情境填空為主，結合特徵比較、步驟順序、原因結果與概念連結，避免全是名詞記憶；只安排1–2題短句理由題，不把每格改成申論。填空以有意義詞組為單位，保留「可能」「較」等限定語，圖中線索可協助思考，但不直接寫出待填答案。每一區有清楚小問題，底部整理各區如何串聯；不為湊題數或提高難度加入教材外知識。'},
   high: {name:'高年級（5–6年級）', description:'參考六年級C挑戰版：自主建構架構、引用課文證據、情境判斷並自行出題；不預填分支與關鍵詞。', design:'高年級C挑戰版：學生自行閱讀教材、分類與建構架構，說明關係並引用課文依據，不是只挖8–10個關鍵詞。學生版只給核心大問題、開放心智圖空白區、3題有討論空間的情境判斷、1題學生自編題與1題延伸思考。心智圖至少占半頁；空間不足就拆成建構頁與應用頁，不縮小文字。一般檢核只問概念有無依據、層級清楚、關係可解釋、例子適切，不列本課主幹或答案名稱。情境明確標示為教學假設，推理限於教材支持的原則，不新增外部知識或要求教材未提供的專業定論。完整架構、作答方向、替代合理說法與三級評分規準放教師版。'}
 };
@@ -69,8 +69,12 @@ ${blankRule()}
 插圖只能中性裝飾或描述情境，不可用機關標籤、分支圖或答案示例替學生完成架構。底稿中的完整概念表、原填空答案與總結只供教師查核，不能原樣印進學生圖。若底稿仍是關鍵詞填空，將其作為教師端概念依據，轉成上述挑戰任務，不將填空答案印出。
 情境不可要求教材未提供的專業定論或精確資料，資料不足時讓學生指出缺少哪些條件。先產生學生圖及另列教師參考文字；教師版圖片等老師檢查後另作。不要自稱已完成內容驗證。
 【已核對教材底稿開始】
-${state.material.trim()}
-【已核對教材底稿結束】`; }
+${materialForImage()}
+【已核對教材底稿結束】
+【本次設定再次確認】
+${blankRule()}
+底稿中的原格數、區域分配與圖面副標僅是既有實測紀錄，若與當前設定不同，請同步改題、教師答案與副標，不能同時要求原10格及另一格數。`; }
+function materialForImage(){if(state.material!==chineseLesson2Material)return state.material.trim();return state.material.trim().replace('恰好10個【　　　　】概念填空','以下為原10格實測底稿；這次概念填空總數依老師當前設定調整').replace('一般1–10題號','依調整後題目使用一般題號').replace('不能自動填空，也不增加題目','不能把答案填入學生圖；可按老師當前填空量刪減或增設有教材依據的題目').replace('副標「進階10格：因果・比較・推論」','副標依本次實際格數標示，保留「因果・比較・推論」').replaceAll('此區3格','原實測此區3格，本次依總量重分配').replace('此區4格','原實測此區4格，本次依總量重分配');}
 function imagePrompt(){if(!state.material.trim())return '';if(state.grade==='high')return highImagePrompt();return `請直接使用圖片生成功能，製作「${state.lesson.trim()||'依教材辨識課名'}」圖片式填空學習單的學生版。這次要圖片，不是只有提示詞或程式碼。
 對象：${gradeInfo[state.grade].name}；科目：${state.subject.trim()||'依教材'}。A4${state.layout}比例，白底、清楚繁體中文、有足夠手寫空間；內容太多請拆頁，不能縮小到不可讀。
 ${gradeInfo[state.grade].design}
@@ -84,8 +88,11 @@ ${blankRule()}
 請先產生學生圖片，等待老師檢查後，再從同一張圖編輯教師答案版。不要宣稱圖片已經驗證正確。
 
 【已核對教材底稿開始】
-${state.material.trim()}
-【已核對教材底稿結束】`;}
+${materialForImage()}
+【已核對教材底稿結束】
+【本次設定再次確認】
+${blankRule()}
+底稿中的原格數、區域分配與圖面副標僅是既有實測紀錄，若與當前設定不同，請同步改題、教師答案與副標，不能同時要求原10格及另一格數。`;}
 function teacherPrompt(){if(!state.material.trim())return '';if(state.grade==='high')return `請依剛才C挑戰版的區塊及題目順序，另外製作教師參考版，不覆寫學生空白圖。提供完整參考概念架構、各題教材依據與推理方向、合理替代答案及三級評分規準（精熟／達標／待加強），面向含概念正確、關係解釋、教材證據、情境推理及自主表達。學生可用不同架構或立場，只要有依據；不以與範例圖相同當得分標準。自編題沒有唯一答案，評量其情境合理、提問清楚與答案有據。未經來源支持的法規或細節標示教材未明確提供。\n${state.material.trim()}`;return `請根據剛才已由老師核對的學生圖，使用圖片編輯製作同版教師答案圖。保持原圖版面、插圖、所有題面和空格位置，保留原有注音，只在原空格以紅色填入答案，並加小字「教師答案版」。如原圖有注音，答案也要帶正確注音，但不可擠壓題面。不得新增、刪除、更換題目；不要重新排版。若題面或答案不確定，先列疑點，不猜。
 請對照下面教材底稿的獨立答案與來源，依區塊、題面與位置逐格核對，再出圖。出圖後仍需人工比較兩版。
 ${state.material.trim()}`;}
@@ -103,3 +110,4 @@ $('copy-fix').addEventListener('click',()=>{if(!state.issues.trim()){toast('先�
 $('download').addEventListener('click',()=>{const checks=[...document.querySelectorAll('[data-check]')].map(el=>`- [${el.checked?'x':' '}] ${el.parentElement.textContent.trim()}`).join('\n');const text=`# ${state.lesson.trim()||'我的圖像學習單'}｜兩步驟製作包\n\n年級：${gradeInfo[state.grade].name}\n填空量：${blankAmounts[state.blankAmount].label}\n注音：${usesPhonetic()?'加注音':'不加注音'}\n範圍：${state.pages||'未填'}\n\n## 1. NotebookLM提示詞\n\n${notebookPrompt()}\n\n## 已核對教材拆解\n\n${state.material||'尚未貼入'}\n\n## 2. ChatGPT學生圖片提示詞\n\n${imagePrompt()||'先貼入教材拆解'}\n\n## 同版教師圖片提示詞\n\n${teacherPrompt()||'先貼入教材拆解'}\n\n## 人工檢查紀錄\n\n${checks}\n\n## 待修正\n\n${state.issues||'未填'}\n\n勾選僅是人工紀錄，不代表系統驗證或教師已定稿。`;const url=URL.createObjectURL(new Blob([text],{type:'text/markdown;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='兩步驟學習單製作包.md';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('製作包已匯出。');});
 $('clear').addEventListener('click',()=>{if(!window.confirm('清除目前瀏覽器內這個工具的教材與檢查紀錄？建議先匯出製作包。'))return;try{localStorage.removeItem(STORAGE_KEY);}catch{}location.reload();});
 render();switchStep(state.step);if(!storageAvailable)$('save-status').textContent='儲存不可用，請匯出製作包';
+
