@@ -111,3 +111,8 @@ $('download').addEventListener('click',()=>{const checks=[...document.querySelec
 $('clear').addEventListener('click',()=>{if(!window.confirm('清除目前瀏覽器內這個工具的教材與檢查紀錄？建議先匯出製作包。'))return;try{localStorage.removeItem(STORAGE_KEY);}catch{}location.reload();});
 render();switchStep(state.step);if(!storageAvailable)$('save-status').textContent='儲存不可用，請匯出製作包';
 
+
+let previewVersion='16';
+function showPreview(version){previewVersion=version;const isMore=version==='22';const path='./assets/四上國語第2課-'+version+'格驗證.png';$('preview-image').src=path;$('preview-image').alt='放學後'+version+'格學生學習單';$('preview-open').href=path;$('preview-download').href=path;$('preview-download').textContent='下載'+version+'格學生版 ↓';$('preview-title').textContent=isMore?'22格・涵蓋更多語句線索':'16格・連結情節與感受';$('preview-description').textContent=isMore?'8＋7＋7格，加入句子寫法、時間關係與過度推論辨別。版面較密，短語作答為主，需長句時建議拆頁。':'6＋5＋5格，從感官語句、人物前後行動，讀到全文主旨。適合以短語整理理解。';$('use-preview').textContent=isMore?'用20格以上範圍開始製作 →':'用10–20格範圍開始製作 →';document.querySelectorAll('[data-preview]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.preview===version)));}
+document.querySelectorAll('[data-preview]').forEach(el=>el.addEventListener('click',()=>showPreview(el.dataset.preview)));
+$('use-preview').addEventListener('click',()=>{$('load-chinese-example').click();if(state.material!==chineseLesson2Material)return;state.blankAmount=previewVersion==='22'?'many':'medium';$('blankAmount').value=state.blankAmount;clearChecks();render();save();$('workspace').scrollIntoView({block:'start',behavior:'smooth'});toast('已載入國語底稿與'+blankAmounts[state.blankAmount].label+'設定。');});
