@@ -105,9 +105,10 @@ $('clear').addEventListener('click',()=>{if(!window.confirm('清除目前瀏覽�
 render();switchStep(state.step);if(!storageAvailable)$('save-status').textContent='儲存不可用，請匯出製作包';
 
 
-let previewVersion='16';
-function showPreview(version){previewVersion=version;const isMore=version==='22';const path='./assets/四上國語第2課-'+version+'格驗證.png';$('preview-image').src=path;$('preview-image').alt='放學後'+version+'格學生學習單';$('preview-open').href=path;$('preview-download').href=path;$('preview-download').textContent='下載'+version+'格學生版 ↓';$('preview-title').textContent=isMore?'22格・涵蓋更多語句線索':'16格・連結情節與感受';$('preview-description').textContent=isMore?'8＋7＋7格，加入句子寫法、時間關係與過度推論辨別。版面較密，短語作答為主，需長句時建議拆頁。':'6＋5＋5格，從感官語句、人物前後行動，讀到全文主旨。適合以短語整理理解。';$('use-preview').textContent=isMore?'以整份22格開始製作 →':'以整份16格開始製作 →';document.querySelectorAll('[data-preview]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.preview===version)));}
-document.querySelectorAll('[data-preview]').forEach(el=>el.addEventListener('click',()=>showPreview(el.dataset.preview)));
-$('use-preview').addEventListener('click',()=>{document.querySelector('.manual-route').open=true;$('load-chinese-example').click();if(state.material!==chineseLesson2Material)return;state.blankMode='exact';$('blankMode').value='exact';state.countBasis='whole_sheet';$('countBasis').value=state.countBasis;state.blankAmount=previewVersion==='22'?'22':'16';$('blankAmount').value=state.blankAmount;clearChecks();render();save();$('workspace').scrollIntoView({block:'start',behavior:'smooth'});toast('已載入國語底稿；暫定整份'+state.blankAmount+'格，待教師確認。');});
-
+const projectExamples = {"social": {"title": "康軒四上社會｜家鄉的地形", "description": "觀察地形特徵 → 連結居民生活 → 理解人與環境互相影響。"}, "math": {"title": "翰林四上數學｜角度", "description": "從對準量角工具、轉動大小，到角的分類與拆合。"}, "english": {"title": "康軒四上英語｜The Big Wind", "description": "看圖談天氣、情境對話與母音線索，串聯英語學習。"}};
+let comparisonVersion='student';
+function renderComparison(){const key=$('example-subject').value;const item=projectExamples[key];const label=comparisonVersion==='student'?'學生版':'教師答案版';const base='./assets/project-examples/'+key+'-'+comparisonVersion;$('preview-image').src=base+'.png';$('preview-image').alt=item.title+'・'+label;$('preview-open').href=base+'.png';$('preview-title').textContent=item.title;$('preview-description').textContent=item.description;$('preview-version').textContent=label;$('preview-download').href=base+'.png';$('preview-download').textContent='下載'+label+'圖片 ↓';$('preview-pdf').href=base+'.pdf';$('preview-pdf').textContent='下載'+label+' PDF ↓';document.querySelectorAll('[data-comparison]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.comparison===comparisonVersion)));}
+$('example-subject').addEventListener('change',renderComparison);
+document.querySelectorAll('[data-comparison]').forEach(el=>el.addEventListener('click',()=>{comparisonVersion=el.dataset.comparison;renderComparison();}));
+renderComparison();
 document.querySelectorAll('[data-notebook-stage]').forEach(el=>el.addEventListener('click',()=>copyText(notebookOriginals[Number(el.dataset.notebookStage)])));
