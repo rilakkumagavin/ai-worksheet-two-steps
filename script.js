@@ -159,10 +159,36 @@ $('clear').addEventListener('click',()=>{if(!window.confirm('清除目前瀏覽�
 render();switchStep(state.step);if(!storageAvailable)$('save-status').textContent='儲存不可用，請匯出製作包';
 
 
-const projectExamples = {"social": {"title": "康軒四上社會｜家鄉的地形", "description": "觀察地形特徵 → 連結居民生活 → 理解人與環境互相影響。"}, "math": {"title": "翰林四上數學｜角度", "description": "從對準量角工具、轉動大小，到角的分類與拆合。"}, "english": {"title": "康軒四上英語｜The Big Wind", "description": "看圖談天氣、情境對話與母音線索，串聯英語學習。"}};
+const projectExamples = {"hometown":{"title":"康軒四上社會｜家鄉在哪裡","description":"找家鄉位置、依問題選圖，再練習判讀圖上要素及電子地圖。兩頁16格，待教師審核。","pages":2},"social": {"title": "康軒四上社會｜家鄉的地形", "description": "觀察地形特徵 → 連結居民生活 → 理解人與環境互相影響。"}, "math": {"title": "翰林四上數學｜角度", "description": "從對準量角工具、轉動大小，到角的分類與拆合。"}, "english": {"title": "康軒四上英語｜The Big Wind", "description": "看圖談天氣、情境對話與母音線索，串聯英語學習。"}};
 let comparisonVersion='student';
-function renderComparison(){const key=$('example-subject').value;const item=projectExamples[key];const label=comparisonVersion==='student'?'學生版':'教師答案版';const base='./assets/project-examples/'+key+'-'+comparisonVersion;$('preview-image').src=base+'.png';$('preview-image').alt=item.title+'・'+label;$('preview-open').href=base+'.png';$('preview-title').textContent=item.title;$('preview-description').textContent=item.description;$('preview-version').textContent=label;$('preview-download').href=base+'.png';$('preview-download').textContent='下載'+label+'圖片 ↓';$('preview-pdf').href=base+'.pdf';$('preview-pdf').textContent='下載'+label+' PDF ↓';document.querySelectorAll('[data-comparison]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.comparison===comparisonVersion)));}
-$('example-subject').addEventListener('change',renderComparison);
+function renderComparison() {
+  const key = $('example-subject').value;
+  const item = projectExamples[key];
+  const label = comparisonVersion === 'student' ? '學生版' : '教師答案版';
+  const base = `./assets/project-examples/${key}-${comparisonVersion}`;
+  const page = $('example-page').value;
+  const imagePath = item.pages ? `${base}-${page}.png` : `${base}.png`;
+  $('example-page-control').hidden = !item.pages;
+  $('preview-qa').hidden = key !== 'hometown';
+  $('preview-image').src = imagePath;
+  $('preview-image').alt = item.title + '・' + label + (item.pages ? `・第${page}頁` : '');
+  $('preview-open').href = imagePath;
+  $('preview-title').textContent = item.title;
+  $('preview-description').textContent = item.description;
+  $('preview-version').textContent = label;
+  $('preview-download').href = imagePath;
+  $('preview-download').textContent = '下載' + label + (item.pages ? `第${page}頁` : '') + '圖片 ↓';
+  $('preview-pdf').href = base + '.pdf';
+  $('preview-pdf').textContent = '下載' + label + ' PDF ↓';
+  document.querySelectorAll('[data-comparison]').forEach(button => {
+    button.setAttribute('aria-pressed', String(button.dataset.comparison === comparisonVersion));
+  });
+}
+$('example-subject').addEventListener('change', () => {
+  $('example-page').value = '1';
+  renderComparison();
+});
+$('example-page').addEventListener('change', renderComparison);
 document.querySelectorAll('[data-comparison]').forEach(el=>el.addEventListener('click',()=>{comparisonVersion=el.dataset.comparison;renderComparison();}));
 renderComparison();
 document.querySelectorAll('[data-notebook-stage]').forEach(el=>el.addEventListener('click',()=>copyText(notebookOriginals[Number(el.dataset.notebookStage)])));
