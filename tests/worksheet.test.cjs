@@ -91,3 +91,15 @@ test('homepage quantity is optional and independent of the ten-blank sample', ()
   assert.equal(app.ids.get('copy-pdf-prompt').disabled, false);
   assert.match(app.ids.get('chatgpt-pdf-prompt').value, /彈性安排格數/);
 });
+
+test('direct production includes selected values and skips the confirmation flow', () => {
+  const app = setup({quickBlankAmount:'20', directGrade:'4', directSubject:'社會', reviewMode:'teacher'});
+  const direct = app.ids.get('direct-prompt').value;
+  assert.match(direct, /國小4年級、社會/);
+  assert.match(direct, /整份20格/);
+  assert.match(direct, /略過所有中間確認/);
+  assert.doesNotMatch(direct, /請先詢問使用者|教師逐關確認|詢問是否納入/);
+  assert.match(app.ids.get('chatgpt-pdf-prompt').value, /教師逐關確認/);
+  app.run("state.directSubject = ''; render()");
+  assert.equal(app.ids.get('copy-direct-prompt').disabled, true);
+});
