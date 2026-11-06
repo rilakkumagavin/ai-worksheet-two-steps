@@ -106,9 +106,9 @@ function validateWorksheet(settings) {
   }
   return [...new Set(errors)];
 }
-let state = {grade:'middle',subject:'',lesson:'',pages:'',material:'',plan:'',phonetic:'grade',blankMode:'flexible',blankAmount:'16',countBasis:'whole_sheet',difficulty:'一般',reviewMode:'teacher',goal:'尋找關聯性',version:'',numbering:'一般題號',layout:'橫式',issues:'',checks:{},qaVersion:3,step:1};
+let state = {quickBlankAmount:'',grade:'middle',subject:'',lesson:'',pages:'',material:'',plan:'',phonetic:'grade',blankMode:'flexible',blankAmount:'16',countBasis:'whole_sheet',difficulty:'一般',reviewMode:'teacher',goal:'尋找關聯性',version:'',numbering:'一般題號',layout:'橫式',issues:'',checks:{},qaVersion:3,step:1};
 let storageAvailable = true;
-try {const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(saved && typeof saved==='object' && !Array.isArray(saved)){for(const key of ['subject','lesson','pages','material','plan','issues','goal','version'])if(typeof saved[key]==='string')state[key]=saved[key];if(gradeInfo[saved.grade])state.grade=saved.grade;/* 舊 grade 設定沿用，依新年級規則解析。 */ if(['grade','on','off'].includes(saved.phonetic))state.phonetic=saved.phonetic;if(Number.isInteger(Number(saved.blankAmount)) && Number(saved.blankAmount)>0)state.blankAmount=String(saved.blankAmount);if(['whole_sheet','per_part'].includes(saved.countBasis))state.countBasis=saved.countBasis;if(['基礎','一般','進階'].includes(saved.difficulty))state.difficulty=saved.difficulty;if(['一般題號','不顯示題號'].includes(saved.numbering))state.numbering=saved.numbering;if(['橫式','直式'].includes(saved.layout))state.layout=saved.layout;if(saved.qaVersion===state.qaVersion&&saved.checks&&typeof saved.checks==='object'&&!Array.isArray(saved.checks))state.checks=saved.checks;if(!['grade','on','off'].includes(saved.phonetic))state.checks={};if(['teacher','ai'].includes(saved.reviewMode))state.reviewMode=saved.reviewMode;if(['flexible','exact'].includes(saved.blankMode))state.blankMode=saved.blankMode;if(saved.step===2)state.step=2;}}catch{storageAvailable=false;}
+try {const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(saved && typeof saved==='object' && !Array.isArray(saved)){for(const key of ['subject','lesson','pages','material','plan','issues','goal','version','quickBlankAmount'])if(typeof saved[key]==='string')state[key]=saved[key];if(gradeInfo[saved.grade])state.grade=saved.grade;/* 舊 grade 設定沿用，依新年級規則解析。 */ if(['grade','on','off'].includes(saved.phonetic))state.phonetic=saved.phonetic;if(Number.isInteger(Number(saved.blankAmount)) && Number(saved.blankAmount)>0)state.blankAmount=String(saved.blankAmount);if(['whole_sheet','per_part'].includes(saved.countBasis))state.countBasis=saved.countBasis;if(['基礎','一般','進階'].includes(saved.difficulty))state.difficulty=saved.difficulty;if(['一般題號','不顯示題號'].includes(saved.numbering))state.numbering=saved.numbering;if(['橫式','直式'].includes(saved.layout))state.layout=saved.layout;if(saved.qaVersion===state.qaVersion&&saved.checks&&typeof saved.checks==='object'&&!Array.isArray(saved.checks))state.checks=saved.checks;if(!['grade','on','off'].includes(saved.phonetic))state.checks={};if(['teacher','ai'].includes(saved.reviewMode))state.reviewMode=saved.reviewMode;if(['flexible','exact'].includes(saved.blankMode))state.blankMode=saved.blankMode;if(saved.step===2)state.step=2;}}catch{storageAvailable=false;}
 if (state.material === chineseExample.material && state.blankAmount === '16') {
   Object.assign(state, chineseExample, { checks: {}, plan: '' });
 }
@@ -125,14 +125,14 @@ function clearChecks() {
   updateQaCount();
 }
 function switchStep(step,focus=false){state.step=step;for(const i of [1,2]){$('step-'+i).hidden=i!==step;$('tab-'+i).setAttribute('aria-selected',String(i===step));$('tab-'+i).tabIndex=i===step?0:-1;}save();if(focus)$('tab-'+step).focus();}
-function blankRule() {
-  const count = Number(state.blankAmount);
+function blankRule(settings = state) {
+  const count = Number(settings.blankAmount);
   let quantity = '依教材重點與書寫空間彈性安排格數，勿為湊數重複設題。';
-  if (state.blankMode === 'exact' && Number.isInteger(count) && count > 0) {
-    quantity = state.countBasis === 'per_part'
+  if (settings.blankMode === 'exact' && Number.isInteger(count) && count > 0) {
+    quantity = settings.countBasis === 'per_part'
       ? `網站指定每部分${count}格，三部分共${count * 3}格。`
       : `網站指定整份${count}格。`;
-  } else if (state.blankMode === 'exact') {
+  } else if (settings.blankMode === 'exact') {
     quantity = '尚未填入有效格數，請先詢問使用者。';
   }
   return `${quantity}出圖前列總格數與三部分分配。每個填空框計一格，姓名日期、裝飾與開放理由題不計。指定格數不得擅減，版面不足可拆頁。依個人經驗且無唯一答案的空格標為「個人化格」，計入總格數且最多2格。教師版填「依學生作答」，評分重點列入答案表，不填假答案。難度：${state.difficulty}，與格數獨立。學習目標：${state.goal || '待指定'}。若目標為尋找關聯性，至少半數填空評量教材支持的比較、因果、先後、分類、條件結果或影響。`;
@@ -225,14 +225,17 @@ ${teacherOverlayRule()}
 學生圖和教師圖分別等比例嵌入PDF，不拉伸、不裁切；多頁依序合併，學生版不混入答案。核對頁數、尺寸、檔案可開啟、指定格數、三部分配置、逐格答案、來源及完整性。QA分為已機器核查／尚待人工核查／未通過；未試印、試作或教師確認均列未完成。
 【底稿僅供核對，不得跳過實圖定位】
 ${state.material.trim()}`;}
-function chatgptPdfPrompt(){return `請根據我在這個對話附上的教材PDF，製作圖像式填空學習單。先確認附件可讀；若未收到PDF，請我附上，不猜內容。
+function chatgptPdfPrompt(){
+  const amount = state.quickBlankAmount.trim();
+  if (amount && (!/^[1-9][0-9]*$/.test(amount) || !Number.isSafeInteger(Number(amount)))) return '';
+  return `請根據我在這個對話附上的教材PDF，製作圖像式填空學習單。先確認附件可讀；若未收到PDF，請我附上，不猜內容。
 請先詢問使用者，並等使用者回答下列資料後再開始製作：
 1. 要製作哪一個單元／單一活動或課次？（請填完整名稱；若附件有多課，先列課名供選擇。）
 2. 學生是幾年級？
 3. 科目是什麼？
 教材版本依附件辨識，不明標待查。不要代填課名、年級或科目，也不要沿用其他教材的資料。使用者本次回答優先於下方網站建議；注音與學生用語須依回答的年級調整。
 ${reviewRule()}
-${blankRule()}
+${blankRule({blankMode: amount ? "exact" : "flexible", blankAmount: amount, countBasis: "whole_sheet"})}
 ${gradeBranchRule()}
 依序完成：1.來源確認（教材名稱、課名、PDF頁序與印刷頁碼、可讀性及缺漏）；2.教材分析（核心問題、學習目標、3～5個重點、例子、關鍵詞及來源）；3.將同一活動／課重組成三個有遞進、因果、比較或整體關係的部分；4.改寫為符合年級的短句，列逐字完整題幹、空格、答案、可接受說法、來源及三部分格數。自然科一活動一份，社會科一課一份；其他科以指定最小課次為準。
 若附件包含單元導入頁、充電站或習作，先列出並詢問是否納入。預設只用本課課文，經同意後可用充電站作為第三部分的應用素材。習作只用來對齊學習重點，不照抄習作題目與答案。
@@ -250,12 +253,18 @@ ${teacherOverlayRule()}
 另列逐格答案表：教學部分、題號或出現順序、完整實圖題幹、圖上位置、答案、可接受說法、教材頁碼／核對線索、QA狀態。
 學生圖、教師圖分別等比例嵌入PDF，多頁按順序合併，不拉伸、不裁切，學生PDF不混入答案。核對頁數、尺寸、可開啟、格數、三部分分配、答案及來源。無工具時說明未完成部分，不冒稱完成。
 全部標待教師審核；QA區分已機器核查、尚待人工核查、未通過。未試印、學生試作、教師確認如實列未完成。`;}
-function render(){$('blankAmount').disabled=state.blankMode!=='exact';$('countBasis').disabled=state.blankMode!=='exact';$('chatgpt-pdf-prompt').value=chatgptPdfPrompt();$('chatgpt-teacher-prompt').value=chatgptTeacherPrompt();document.querySelectorAll('[data-grade]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.grade===state.grade)));$('grade-description').textContent=gradeInfo[state.grade].description;$('font-note').hidden=!usesPhonetic();$('high-note').hidden=true;$('notebook-prompt').value=notebookPrompt();$('image-prompt').value=imagePrompt();$('teacher-prompt').value=teacherPrompt();$('copy-image').disabled=!$('image-prompt').value;$('load-example').textContent='載入地形實測範例';const errors = state.material.trim() ? validateWorksheet(state) : [];
+function render(){$('blankAmount').disabled=state.blankMode!=='exact';$('countBasis').disabled=state.blankMode!=='exact';const pdfPrompt = chatgptPdfPrompt();
+  $('chatgpt-pdf-prompt').value = pdfPrompt;
+  $('copy-pdf-prompt').disabled = !pdfPrompt;
+  $('quickBlankAmount').setAttribute('aria-invalid', String(!pdfPrompt));
+  $('quick-blank-error').hidden = Boolean(pdfPrompt);
+  $('quick-blank-error').textContent = pdfPrompt ? '' : '請輸入正整數格數，或留空使用彈性題量。';
+  $('chatgpt-teacher-prompt').value=chatgptTeacherPrompt();document.querySelectorAll('[data-grade]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.grade===state.grade)));$('grade-description').textContent=gradeInfo[state.grade].description;$('font-note').hidden=!usesPhonetic();$('high-note').hidden=true;$('notebook-prompt').value=notebookPrompt();$('image-prompt').value=imagePrompt();$('teacher-prompt').value=teacherPrompt();$('copy-image').disabled=!$('image-prompt').value;$('load-example').textContent='載入地形實測範例';const errors = state.material.trim() ? validateWorksheet(state) : [];
   $('material-status').textContent = !state.material.trim()
     ? '請貼上教材分析，再填入單一課次及來源範圍。'
     : errors.length ? errors.join(' ') : '基本資料一致，可複製指令。教材證據與實圖仍待核對。';}
 async function copyText(text,field){if(!text.trim()){toast('請先填入教材內容。');return;}try{await navigator.clipboard.writeText(text);toast('已複製，可以貼到對應平台。');}catch{if(field){field.focus();field.select();}toast('自動複製不可用，請選取文字後手動複製。');}}
-for(const key of [...editableExampleFields, 'reviewMode']){$(key).value=state[key];$(key).addEventListener('input',()=>{state[key]=$(key).value;if(key!=='issues')clearChecks();render();save();});}
+for(const key of [...editableExampleFields, 'reviewMode', 'quickBlankAmount']){$(key).value=state[key];$(key).addEventListener('input',()=>{state[key]=$(key).value;if(key!=='issues')clearChecks();render();save();});}
 document.querySelectorAll('[data-grade]').forEach(el=>el.addEventListener('click',()=>{state.grade=el.dataset.grade;clearChecks();render();save();}));
 document.querySelectorAll('[data-check]').forEach(el=>{el.checked=state.checks[el.dataset.check]===true;el.addEventListener('change',()=>{state.checks[el.dataset.check]=el.checked;updateQaCount();save();});});
 updateQaCount();

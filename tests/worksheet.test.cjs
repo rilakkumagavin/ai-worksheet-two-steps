@@ -79,3 +79,15 @@ test('copy routes the generated student prompt to the clipboard', async () => {
   assert.equal(app.clipboard(), app.ids.get('chatgpt-pdf-prompt').value);
   assert.match(app.ids.get('toast').textContent, /已複製/);
 });
+
+test('homepage quantity is optional and independent of the ten-blank sample', () => {
+  const app = setup({quickBlankAmount:'24'});
+  app.click('load-chinese-example');
+  assert.match(app.ids.get('chatgpt-pdf-prompt').value, /網站指定整份24格/);
+  assert.match(app.ids.get('image-prompt').value, /網站指定整份10格/);
+  app.run("state.quickBlankAmount = '2.5'; render()");
+  assert.equal(app.ids.get('copy-pdf-prompt').disabled, true);
+  app.run("state.quickBlankAmount = ''; render()");
+  assert.equal(app.ids.get('copy-pdf-prompt').disabled, false);
+  assert.match(app.ids.get('chatgpt-pdf-prompt').value, /彈性安排格數/);
+});
