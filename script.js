@@ -325,7 +325,7 @@ function renderComparison() {
   const page = $('example-page').value;
   const imagePath = item.pages ? `${base}-${page}.png` : `${base}.png`;
   $('example-page-control').hidden = !item.pages;
-  $('preview-qa').hidden = key !== 'hometown';
+  $('preview-qa').hidden = false;
   $('preview-image').src = imagePath;
   $('preview-image').alt = item.title + '・' + label + (item.pages ? `・第${page}頁` : '');
   $('preview-open').href = imagePath;
