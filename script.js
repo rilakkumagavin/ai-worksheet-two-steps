@@ -315,10 +315,10 @@ $('clear').addEventListener('click',()=>{if(!window.confirm('清除目前瀏覽�
 render();switchStep(state.step);if(!storageAvailable)$('save-status').textContent='儲存不可用，請匯出製作包';
 
 
-const projectExamples = {"hometown":{"title":"康軒四上社會｜家鄉在哪裡","description":"找家鄉位置、依問題選圖，再練習判讀圖上要素及電子地圖。兩頁16格，待教師審核。","pages":2},"social": {"title": "康軒四上社會｜家鄉的地形", "description": "觀察地形特徵 → 連結居民生活 → 理解人與環境互相影響。"}, "math": {"title": "翰林四上數學｜角度", "description": "從對準量角工具、轉動大小，到角的分類與拆合。"}, "english": {"title": "康軒四上英語｜The Big Wind", "description": "看圖談天氣、情境對話與母音線索，串聯英語學習。"}};
+const projectExamples = {"science": {"title": "四上自然｜地表環境會變動嗎？・進階版", "description": "單張12格（4＋4＋4）。比較實驗條件、區分觀察與原因，再用證據推論環境影響。來源：活動2，課本18–22頁。待教師審核。"}, "chinese": {"title": "四上國語｜奶奶的排骨粥・進階版", "description": "單張12格（4＋4＋4）。連讀不同時期，找出對比、動作線索與祖孫情感。來源：第2課正文15–17頁；合理推論可有不同說法。待教師審核。"}, "hometown": {"title": "四上社會｜家鄉在哪裡・新設計", "description": "教學影片中的單張16格設計：找到家鄉、讀懂地圖、用電子地圖探索。第3題用語及示意地圖輪廓仍待教師核對。"}};
 let comparisonVersion='student';
 function renderComparison() {
-  const key = $('example-subject').value;
+  const key = Object.hasOwn(projectExamples, $('example-subject').value) ? $('example-subject').value : 'science';
   const item = projectExamples[key];
   const label = comparisonVersion === 'student' ? '學生版' : '教師答案版';
   const base = `./assets/project-examples/${key}-${comparisonVersion}`;
