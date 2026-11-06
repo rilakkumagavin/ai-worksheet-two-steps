@@ -1,0 +1,366 @@
+{
+  "worksheetId": "hometown-1-1",
+  "grade": 4,
+  "subject": "社會",
+  "publisher": "康軒",
+  "lessonTitle": "康軒四上社會 1-1 家鄉在哪裡",
+  "sourcePages": "課本印刷10–17／PDF3–10。習作印刷2–5只核對教學方向。",
+  "learningGoal": "尋找關聯性",
+  "coreQuestion": "怎樣用地圖工具介紹我們生活的地方？",
+  "sections": [
+    {
+      "title": "從生活找位置",
+      "plannedBlanks": 4,
+      "questions": [
+        {
+          "questionId": "Q01",
+          "questionText": "出生、成長，或在哪一種情況下，一個地方可能成為家鄉？",
+          "answer": "長期生活",
+          "acceptableAnswers": [
+            "長期居住"
+          ],
+          "sourceEvidence": "課本印刷10／PDF3",
+          "relationType": "資訊定位",
+          "illustrationPurpose": "用出生地到成長地的順序圖支援第2題",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 1,
+            "x": 115,
+            "y": 522,
+            "width": 264,
+            "height": 53
+          }
+        },
+        {
+          "questionId": "Q02",
+          "questionText": "看上圖：出生與成長在不同地方，家鄉一定只有一個嗎？",
+          "answer": "不只一個",
+          "acceptableAnswers": [
+            "可能有多個"
+          ],
+          "sourceEvidence": "課本印刷10／PDF3",
+          "relationType": "條件",
+          "illustrationPurpose": "用出生地到成長地的順序圖支援第2題",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 1,
+            "x": 115,
+            "y": 667,
+            "width": 264,
+            "height": 53
+          }
+        },
+        {
+          "questionId": "Q03",
+          "questionText": "要介紹家鄉的位置，可先在地圖找出所在的哪一級行政區？",
+          "answer": "縣市",
+          "acceptableAnswers": [
+            "縣或市"
+          ],
+          "sourceEvidence": "課本印刷11／PDF4",
+          "relationType": "應用",
+          "illustrationPurpose": "用出生地到成長地的順序圖支援第2題",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 1,
+            "x": 115,
+            "y": 812,
+            "width": 264,
+            "height": 53
+          }
+        },
+        {
+          "questionId": "Q04",
+          "questionText": "課文中的花蓮縣，位於臺灣的哪一側？",
+          "answer": "東部",
+          "acceptableAnswers": [
+            "臺灣東部"
+          ],
+          "sourceEvidence": "課本印刷11／PDF4",
+          "relationType": "資訊定位",
+          "illustrationPurpose": "用出生地到成長地的順序圖支援第2題",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 1,
+            "x": 115,
+            "y": 957,
+            "width": 264,
+            "height": 53
+          }
+        }
+      ]
+    },
+    {
+      "title": "依問題選工具",
+      "plannedBlanks": 4,
+      "questions": [
+        {
+          "questionId": "Q05",
+          "questionText": "看上圖：要用分區線查城市有哪些區，適合哪種圖？",
+          "answer": "行政區圖",
+          "acceptableAnswers": [
+            "行政區域圖"
+          ],
+          "sourceEvidence": "課本印刷12／PDF5",
+          "relationType": "應用",
+          "illustrationPurpose": "用虛構分區示意支援第5題",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 1,
+            "x": 953,
+            "y": 522,
+            "width": 264,
+            "height": 53
+          }
+        },
+        {
+          "questionId": "Q06",
+          "questionText": "想找主要道路與鐵路，適合查哪一種圖？",
+          "answer": "交通路線圖",
+          "acceptableAnswers": [
+            "交通圖"
+          ],
+          "sourceEvidence": "課本印刷13／PDF6",
+          "relationType": "應用",
+          "illustrationPurpose": "用虛構分區示意支援第5題",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 1,
+            "x": 953,
+            "y": 667,
+            "width": 264,
+            "height": 53
+          }
+        },
+        {
+          "questionId": "Q07",
+          "questionText": "想看高低起伏與河川分布，適合查哪一種圖？",
+          "answer": "地形圖",
+          "acceptableAnswers": [
+            "地形分布圖"
+          ],
+          "sourceEvidence": "課本印刷13／PDF6",
+          "relationType": "應用",
+          "illustrationPurpose": "用虛構分區示意支援第5題",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 1,
+            "x": 953,
+            "y": 812,
+            "width": 264,
+            "height": 53
+          }
+        },
+        {
+          "questionId": "Q08",
+          "questionText": "想找遊玩的景點，適合查哪一種圖？",
+          "answer": "觀光導覽圖",
+          "acceptableAnswers": [
+            "觀光地圖"
+          ],
+          "sourceEvidence": "課本印刷13／PDF6",
+          "relationType": "應用",
+          "illustrationPurpose": "用虛構分區示意支援第5題",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 1,
+            "x": 953,
+            "y": 957,
+            "width": 264,
+            "height": 53
+          }
+        }
+      ]
+    },
+    {
+      "title": "讀懂提示，再查找與比較",
+      "plannedBlanks": 8,
+      "questions": [
+        {
+          "questionId": "Q09",
+          "questionText": "看示意圖 A。這項要素用來說明地圖主題或範圍，稱為什麼？",
+          "answer": "圖名",
+          "acceptableAnswers": [
+            "地圖名稱"
+          ],
+          "sourceEvidence": "課本印刷14／PDF7",
+          "relationType": "應用",
+          "illustrationPurpose": "用虛構地圖的 A–D 標記和電子地圖介面支援判讀",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 2,
+            "x": 107,
+            "y": 679,
+            "width": 264,
+            "height": 49
+          }
+        },
+        {
+          "questionId": "Q10",
+          "questionText": "看示意圖 B。這項要素可以幫助判斷方位，稱為什麼？",
+          "answer": "方向標",
+          "acceptableAnswers": [
+            "指北標"
+          ],
+          "sourceEvidence": "課本印刷14／PDF7",
+          "relationType": "應用",
+          "illustrationPurpose": "用虛構地圖的 A–D 標記和電子地圖介面支援判讀",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 2,
+            "x": 107,
+            "y": 809,
+            "width": 264,
+            "height": 49
+          }
+        },
+        {
+          "questionId": "Q11",
+          "questionText": "看示意圖 C。這項要素表示實際距離縮小的程度，稱為什麼？",
+          "answer": "比例尺",
+          "acceptableAnswers": [
+            "比例尺"
+          ],
+          "sourceEvidence": "課本印刷14／PDF7",
+          "relationType": "應用",
+          "illustrationPurpose": "用虛構地圖的 A–D 標記和電子地圖介面支援判讀",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 2,
+            "x": 107,
+            "y": 939,
+            "width": 264,
+            "height": 49
+          }
+        },
+        {
+          "questionId": "Q12",
+          "questionText": "看示意圖 D。這項要素說明符號代表什麼景物，稱為什麼？",
+          "answer": "圖例",
+          "acceptableAnswers": [
+            "圖例"
+          ],
+          "sourceEvidence": "課本印刷14／PDF7",
+          "relationType": "應用",
+          "illustrationPurpose": "用虛構地圖的 A–D 標記和電子地圖介面支援判讀",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 2,
+            "x": 107,
+            "y": 1069,
+            "width": 264,
+            "height": 49
+          }
+        },
+        {
+          "questionId": "Q13",
+          "questionText": "只知道門牌資料時，可在電子地圖的搜尋框輸入什麼？",
+          "answer": "地址",
+          "acceptableAnswers": [
+            "住址"
+          ],
+          "sourceEvidence": "課本印刷15／PDF8",
+          "relationType": "應用",
+          "illustrationPurpose": "用虛構地圖的 A–D 標記和電子地圖介面支援判讀",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 2,
+            "x": 945,
+            "y": 679,
+            "width": 264,
+            "height": 49
+          }
+        },
+        {
+          "questionId": "Q14",
+          "questionText": "想看清較小範圍的細節，要對電子地圖做什麼操作？",
+          "answer": "放大",
+          "acceptableAnswers": [
+            "放大地圖"
+          ],
+          "sourceEvidence": "課本印刷15／PDF8",
+          "relationType": "應用",
+          "illustrationPurpose": "用虛構地圖的 A–D 標記和電子地圖介面支援判讀",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 2,
+            "x": 945,
+            "y": 809,
+            "width": 264,
+            "height": 49
+          }
+        },
+        {
+          "questionId": "Q15",
+          "questionText": "想快速查道路與景物名稱，適合切換到哪一種電子地圖模式？",
+          "answer": "地圖模式",
+          "acceptableAnswers": [
+            "地圖模式"
+          ],
+          "sourceEvidence": "課本印刷16／PDF9",
+          "relationType": "應用",
+          "illustrationPurpose": "用虛構地圖的 A–D 標記和電子地圖介面支援判讀",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 2,
+            "x": 945,
+            "y": 939,
+            "width": 264,
+            "height": 49
+          }
+        },
+        {
+          "questionId": "Q16",
+          "questionText": "想從上方看房屋與樹林的影像，適合切換到哪一種模式？",
+          "answer": "衛星模式",
+          "acceptableAnswers": [
+            "衛星影像模式"
+          ],
+          "sourceEvidence": "課本印刷17／PDF10",
+          "relationType": "應用",
+          "illustrationPurpose": "用虛構地圖的 A–D 標記和電子地圖介面支援判讀",
+          "illustrationConstraints": "僅用虛構黑白示意。學生圖保留作答框。",
+          "answerLeakRisk": "待教師複核",
+          "qaStatus": "待教師審核",
+          "box": {
+            "page": 2,
+            "x": 945,
+            "y": 1069,
+            "width": 264,
+            "height": 49
+          }
+        }
+      ]
+    }
+  ]
+}
